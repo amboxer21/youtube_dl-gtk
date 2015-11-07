@@ -41,6 +41,12 @@ tooltipURL.set_tip($entry, "Enter youtube URL here.", nil)
 tooltipDir = Gtk::Tooltips.new
 tooltipDir.set_tip($entryDir, "Enter the directory you wish to save the song to. \nIf it doesnt exist, it will be created", nil)
 
+buttonLogo = Gtk::Button.new
+table.attach(buttonLogo,0,5,0,4)
+
+buttonLogoImage = Gtk::Image.new("youtube-logo-transparent_solid.png")
+buttonLogo.image = buttonLogoImage
+
 def on_error
         md = Gtk::MessageDialog.new(nil, Gtk::Dialog::MODAL | 
              Gtk::Dialog::DESTROY_WITH_PARENT, Gtk::MessageDialog::ERROR, 
@@ -82,11 +88,12 @@ button.signal_connect("clicked") {
 }
 
 table.show
-labelDir.show
-labelURL.show
 $entry.show
 button.show
 window.show
+labelDir.show
+labelURL.show
 $entryDir.show
+buttonLogo.show
 
 Gtk.main
