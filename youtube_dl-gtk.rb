@@ -35,6 +35,12 @@ error.signal_connect("clicked") {
        on_error
 }
 
+tooltipURL = Gtk::Tooltips.new
+tooltipURL.set_tip($entry, "Enter youtube URL here.", nil)
+
+tooltipDir = Gtk::Tooltips.new
+tooltipDir.set_tip($entryDir, "Enter the directory you wish to save the song to. \nIf it doesnt exist, it will be created", nil)
+
 def on_error
         md = Gtk::MessageDialog.new(nil, Gtk::Dialog::MODAL | 
              Gtk::Dialog::DESTROY_WITH_PARENT, Gtk::MessageDialog::ERROR, 
