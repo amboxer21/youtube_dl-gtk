@@ -20,13 +20,15 @@ window.add(table)
 $entry = Gtk::Entry.new
 table.attach($entry, 1,5,5,6)
 
-labelURL = Gtk::Label.new("U2B URL: ")
+labelURL = Gtk::Label.new
+labelURL.set_markup("<b>U2B URL: </b>")
 table.attach(labelURL,0,1,5,6)
 
 $entryDir = Gtk::Entry.new
 table.attach($entryDir, 1,5,4,5)
 
-labelDir = Gtk::Label.new("Save to: ")
+labelDir = Gtk::Label.new
+labelDir.set_markup("<b>Save to: </b>")
 table.attach(labelDir,0,1,4,5)
 
 error = Gtk::Button.new("Error")
