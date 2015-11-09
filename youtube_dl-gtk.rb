@@ -54,8 +54,8 @@ buttonLogoImage = Gtk::Image.new("youtube-logo-transparent_solid.png")
 buttonLogo.image = buttonLogoImage
 
 def fileOperation(file,flag,string)
-        if flag == "w"
-               open(file,"w") do |line|
+        if flag == "a"
+               open(file,"a") do |line|
                      line.puts string
                end
         elsif flag == "r"
@@ -78,7 +78,7 @@ def delete_text
                Dir::mkdir "#{$baseDir}/.youtube_dl-gtk"
        end
 
-       fileOperation("#{$baseDir}/.youtube_dl-gtk/history","w","#{$entry.text}") 
+       fileOperation("#{$baseDir}/.youtube_dl-gtk/history","a","#{$entry.text}") 
        $entry.delete_text(0,$entry.text.length)
 end
 
