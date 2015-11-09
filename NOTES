@@ -1,0 +1,6 @@
+NOTES:
+ 
+- FFMPEG could potentially render this program unusable if FFMPEG is not built with libmp3lame. A solution would be to recompile ffmpeg with libmp3lame enabled. 
+  Type ffmpeg on the command line to see what its linked with.
+
+- 
