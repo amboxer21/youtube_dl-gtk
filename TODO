@@ -2,3 +2,4 @@ List of things todo
 
 - Add url dowload history and incorporate into the UI
 - Compile ffmpeg with libmp3lame for all base distros. --enable-libmp3lame
+- Add sanity check for downloaded URL and show error dialog if not correct format
