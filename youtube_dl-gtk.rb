@@ -7,11 +7,16 @@ require 'fileutils'
 $baseDir  = ENV['HOME']
 $musicDir = "#{$baseDir}/Music"
 
+mainWindow = Gtk::Window.new
 window = Gtk::Window.new
-#window.set_default_size(200, 100)
+#mainWindow.set_default_size(200, 100)
 
-window.signal_connect("destroy") {
+mainWindow.signal_connect("destroy") {
        Gtk.main_quit
+}
+
+mainWindow.signal_connect("delete_event") {
+       false
 }
 
 window.signal_connect("delete_event") {
@@ -19,7 +24,7 @@ window.signal_connect("delete_event") {
 }
 
 table = Gtk::Table.new(5,6,true)
-window.add(table)
+mainWindow.add(table)
 
 $entry = Gtk::Entry.new
 table.attach($entry, 1,5,5,6)
@@ -94,6 +99,9 @@ button = Gtk::Button.new("Download")
 table.attach(button,5,6,5,6)
 button.signal_connect("clicked") do
 
+window.move(200,200)
+window.show
+
        if File.exists?($musicDir) && $entryDir.text.empty? && !$entry.text.empty?
               #`youtube-dl --extract-audio --audio-format mp3 -o "#{$musicDir}/%(title)s.%(ext)s" "#{$entry.text}/%(title)s.%(ext)s"`
               download($musicDir,$entry.text,1)
@@ -121,12 +129,13 @@ button.signal_connect("clicked") do
 end
 
 table.show
-$entry.show
 button.show
-window.show
+mainWindow.show
 labelDir.show
 labelURL.show
-$entryDir.show
 buttonLogo.show
+
+$entry.show
+$entryDir.show
 
 Gtk.main
