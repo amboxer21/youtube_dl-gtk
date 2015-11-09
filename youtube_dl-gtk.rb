@@ -8,18 +8,11 @@ $baseDir  = ENV['HOME']
 $musicDir = "#{$baseDir}/Music"
 
 mainWindow = Gtk::Window.new
-window = Gtk::Window.new
-#mainWindow.set_default_size(200, 100)
-
 mainWindow.signal_connect("destroy") {
        Gtk.main_quit
 }
 
 mainWindow.signal_connect("delete_event") {
-       false
-}
-
-window.signal_connect("delete_event") {
        false
 }
 
@@ -95,19 +88,41 @@ def download(dir,entry,val)
        end
 end
 
+# My attempt to get a second window going to place history info in a scrolled window widget.
+def childWindow
+       $window = Gtk::Window.new
+       $window.signal_connect("delete_event") do
+             false
+       end
+
+       $table2 = Gtk::Table.new(5,6,true)
+       $window.add($table2)
+
+       $buttonDelete = Gtk::Button.new("Delete")
+       $table2.attach($buttonDelete,4,5,4,5)
+
+       $buttonImg = Gtk::Button.new
+       $table2.attach($buttonImg,0,3,0,3)
+
+       $testImg = Gtk::Image.new("youtube-logo-transparent_solid.png")
+       $buttonImg.image = $testImg
+
+       $window.show
+       $window.move(200,200)
+       $testImg.show
+       $buttonImg.show
+       $buttonDelete.show
+end
+
 buttonHistory = Gtk::Button.new("History")
 table.attach(buttonHistory,5,6,4,5)
 buttonHistory.signal_connect("clicked") do
-       window.move(200,200)
-       window.show
+       childWindow
 end
 
 button = Gtk::Button.new("Download")
 table.attach(button,5,6,5,6)
 button.signal_connect("clicked") do
-
-window.move(200,200)
-window.show
 
        if File.exists?($musicDir) && $entryDir.text.empty? && !$entry.text.empty?
               #`youtube-dl --extract-audio --audio-format mp3 -o "#{$musicDir}/%(title)s.%(ext)s" "#{$entry.text}/%(title)s.%(ext)s"`
