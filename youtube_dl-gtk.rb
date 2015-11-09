@@ -34,9 +34,13 @@ labelDir.set_markup("<b>Save to: </b>")
 table.attach(labelDir,0,1,4,5)
 
 error = Gtk::Button.new("Error")
-
 error.signal_connect("clicked") {
        on_error
+}
+
+errorURL = Gtk::Button.new("Error")
+errorURL.signal_connect("clicked") {
+       badURL
 }
 
 tooltipURL = Gtk::Tooltips.new
@@ -69,6 +73,21 @@ def on_error
              Gtk::MessageDialog::BUTTONS_CLOSE, "No URL specified.")
         md.run
         md.destroy
+end
+
+def badURL
+        md = Gtk::MessageDialog.new(nil, Gtk::Dialog::MODAL |
+             Gtk::Dialog::DESTROY_WITH_PARENT, Gtk::MessageDialog::ERROR,
+             Gtk::MessageDialog::BUTTONS_CLOSE, "Improperly formatted URL.")
+        md.run
+        md.destroy
+end
+
+def downloadSanityCheck
+       #if !$entry.text == /^https:\/\/www\.youtube\.com\/watch.*$/
+       if $entry.text.empty?
+             badURL
+       end
 end
 
 def delete_text
@@ -120,17 +139,19 @@ buttonHistory.signal_connect("clicked") do
        childWindow
 end
 
-button = Gtk::Button.new("Download")
-table.attach(button,5,6,5,6)
-button.signal_connect("clicked") do
+buttonDownload = Gtk::Button.new("Download")
+table.attach(buttonDownload,5,6,5,6)
+buttonDownload.signal_connect("clicked") do
 
        if File.exists?($musicDir) && $entryDir.text.empty? && !$entry.text.empty?
               #`youtube-dl --extract-audio --audio-format mp3 -o "#{$musicDir}/%(title)s.%(ext)s" "#{$entry.text}/%(title)s.%(ext)s"`
+              downloadSanityCheck
               download($musicDir,$entry.text,1)
               delete_text
        elsif !File.exists?($musicDir) && $entryDir.text.empty?
               Dir::mkdir "#{ENV['HOME']}/Music"
               #`youtube-dl --extract-audio --audio-format mp3 -o "#{$musicDir}/%(title)s.%(ext)s" "#{$entry.text}/%(title)s.%(ext)s"`
+              downloadSanityCheck
               download($musicDir,$entry.text,1)
               delete_text
        elsif !$entryDir.text.empty? && !$entry.text.empty?
@@ -144,6 +165,10 @@ button.signal_connect("clicked") do
                      download("#{$baseDir}/#{$entryDir}",$entry.text,0)
                      delete_text
               end
+       #elsif !$entry.text =~ /^https:\/\/www\.youtube\.com\/watch.*/
+       elsif $entry.text =~ /https.*/
+              puts "Bad URL entered."
+              badURL
        elsif $entry.text.empty?
               puts "Entry is empty."
               on_error
@@ -151,7 +176,7 @@ button.signal_connect("clicked") do
 end
 
 table.show
-button.show
+buttonDownload.show
 labelDir.show
 labelURL.show
 mainWindow.show
