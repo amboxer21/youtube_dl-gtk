@@ -61,6 +61,14 @@ def delete_text
        $entry.delete_text(0,$entry.text.length)
 end
 
+def download(dir,entry,val)
+       if val == 1
+              `youtube-dl --extract-audio --audio-format mp3 -o "#{dir}/%(title)s.%(ext)s" "#{entry}/%(title)s.%(ext)s"`
+       elsif val == 0
+              `youtube-dl --extract-audio --audio-format mp3 -o "#{dir}/#{dir}/%(title)s.%(ext)s" "#{entry}"`
+       end
+end
+
 button = Gtk::Button.new("Download")
 table.attach(button,5,6,5,6)
 button.signal_connect("clicked") {
@@ -68,19 +76,23 @@ button.signal_connect("clicked") {
    $musicDir = "#{$baseDir}/Music"
 
        if File.exists?($musicDir) && $entryDir.text.empty? && !$entry.text.empty?
-              `youtube-dl --extract-audio --audio-format mp3 -o "#{$musicDir}/%(title)s.%(ext)s" "#{$entry.text}/%(title)s.%(ext)s"`
+              #`youtube-dl --extract-audio --audio-format mp3 -o "#{$musicDir}/%(title)s.%(ext)s" "#{$entry.text}/%(title)s.%(ext)s"`
+              download($musicDir,$entry.text,1)
               delete_text
        elsif !File.exists?($musicDir) && $entryDir.text.empty?
               Dir::mkdir "#{ENV['HOME']}/Music"
-              `youtube-dl --extract-audio --audio-format mp3 -o "#{$musicDir}/%(title)s.%(ext)s" "#{$entry.text}/%(title)s.%(ext)s"`
+              #`youtube-dl --extract-audio --audio-format mp3 -o "#{$musicDir}/%(title)s.%(ext)s" "#{$entry.text}/%(title)s.%(ext)s"`
+              download($musicDir,$entry.text,1)
               delete_text
        elsif !$entryDir.text.empty? && !$entry.text.empty?
               if File.exists?("#{$baseDir}/#{$entryDir.text}")
-                     `youtube-dl --extract-audio --audio-format mp3 -o "#{$baseDir}/#{$entryDir.text}/%(title)s.%(ext)s" "#{$entry.text}"`
+                     #`youtube-dl --extract-audio --audio-format mp3 -o "#{$baseDir}/#{$entryDir.text}/%(title)s.%(ext)s" "#{$entry.text}"`
+                     download("#{$baseDir}/#{$entryDir}",$entry.text,0)
                      delete_text
               else
                      FileUtils::mkdir_p "#{$baseDir}/#{$entryDir.text}"
-                     `youtube-dl --extract-audio --audio-format mp3 -o "#{$baseDir}/#{$entryDir.text}/%(title)s.%(ext)s" "#{$entry.text}"`
+                     #`youtube-dl --extract-audio --audio-format mp3 -o "#{$baseDir}/#{$entryDir.text}/%(title)s.%(ext)s" "#{$entry.text}"`
+                     download("#{$baseDir}/#{$entryDir}",$entry.text,0)
                      delete_text
               end
        elsif $entry.text.empty?
