@@ -20,8 +20,9 @@ user=$(users | awk '{print $1}')
 export user=$user
 
 function dpkg() {
-	apt-get --force-yes --yes install ruby1.9.3
 	apt-get --force-yes --yes install ruby-dev
+	apt-get --force-yes --yes install ruby1.9.3
+  apt-get --force-yes --yes install youtube-dl
 	apt-get --force-yes --yes install libglib2.0-0
 	apt-get --force-yes --yes install libmagickwand-dev
 };
