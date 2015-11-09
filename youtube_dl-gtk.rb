@@ -95,6 +95,13 @@ def download(dir,entry,val)
        end
 end
 
+buttonHistory = Gtk::Button.new("History")
+table.attach(buttonHistory,5,6,4,5)
+buttonHistory.signal_connect("clicked") do
+       window.move(200,200)
+       window.show
+end
+
 button = Gtk::Button.new("Download")
 table.attach(button,5,6,5,6)
 button.signal_connect("clicked") do
@@ -130,10 +137,11 @@ end
 
 table.show
 button.show
-mainWindow.show
 labelDir.show
 labelURL.show
+mainWindow.show
 buttonLogo.show
+buttonHistory.show
 
 $entry.show
 $entryDir.show
