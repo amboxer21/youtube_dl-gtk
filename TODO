@@ -1,4 +1,4 @@
 List of things todo
 
 - Add url dowload history
-- Compile ffmpeg with libmp3lame for all base distros.
+- Compile ffmpeg with libmp3lame for all base distros. --enable-libmp3lame
