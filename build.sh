@@ -74,6 +74,7 @@ case $pkg_manager in
 
   dpkg)
     echo -e "\nPackage Manager: dpkg.\n";
+    echo -e "\nInstalling necessary packages.\n"
     dpkg;
   ;;
   pacman)
@@ -84,6 +85,7 @@ case $pkg_manager in
   ;;
   yum)
     echo -e "\nPackage Manager: yum.\n";
+    echo -e "\nInstalling necessary packages.\n"
     yum;
   ;;
   aptitude)
