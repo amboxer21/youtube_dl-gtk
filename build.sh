@@ -1,18 +1,18 @@
 #!/bin/bash
   
   # Make sure user running script is root.
-	if [[ $EUID -ne 0 ]]; then
-		echo -e "\nThis script must be run as root.\n";
-		exit;
-	fi
+  if [[ $EUID -ne 0 ]]; then
+    echo -e "\nThis script must be run as root.\n";
+    exit;
+  fi
 
-	if [[ `uname -m | egrep -io "(i[36]86)" | uniq` ]]; then 
-		arch="32";
+  if [[ `uname -m | egrep -io "(i[36]86)" | uniq` ]]; then 
+    arch="32";
     echo -e "\nSystem: ${arch}bit.\n";
-	else
-		arch="64";
+  else
+    arch="64";
     echo -e "\nSystem: ${arch}bit.\n";
-	fi
+  fi
 
 # Get the current shell
 shell=$(echo $SHELL | awk '{gsub(/\//, " "); print $2}')	
