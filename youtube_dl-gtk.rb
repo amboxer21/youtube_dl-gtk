@@ -84,8 +84,9 @@ def badURL
 end
 
 def downloadSanityCheck
-       #if !$entry.text == /^https:\/\/www\.youtube\.com\/watch.*$/
-       if $entry.text.empty?
+       puts "downloadSanityCheck #{$entry.text}"
+       if $entry.text !~ /^https:\/\/www.youtube.com\/watch?/
+       #if !$entry.text.scan(/^https/)
              badURL
        end
 end
@@ -143,15 +144,15 @@ buttonDownload = Gtk::Button.new("Download")
 table.attach(buttonDownload,5,6,5,6)
 buttonDownload.signal_connect("clicked") do
 
+       downloadSanityCheck
+
        if File.exists?($musicDir) && $entryDir.text.empty? && !$entry.text.empty?
               #`youtube-dl --extract-audio --audio-format mp3 -o "#{$musicDir}/%(title)s.%(ext)s" "#{$entry.text}/%(title)s.%(ext)s"`
-              downloadSanityCheck
               download($musicDir,$entry.text,1)
               delete_text
        elsif !File.exists?($musicDir) && $entryDir.text.empty?
               Dir::mkdir "#{ENV['HOME']}/Music"
               #`youtube-dl --extract-audio --audio-format mp3 -o "#{$musicDir}/%(title)s.%(ext)s" "#{$entry.text}/%(title)s.%(ext)s"`
-              downloadSanityCheck
               download($musicDir,$entry.text,1)
               delete_text
        elsif !$entryDir.text.empty? && !$entry.text.empty?
@@ -165,10 +166,6 @@ buttonDownload.signal_connect("clicked") do
                      download("#{$baseDir}/#{$entryDir}",$entry.text,0)
                      delete_text
               end
-       #elsif !$entry.text =~ /^https:\/\/www\.youtube\.com\/watch.*/
-       elsif $entry.text =~ /https.*/
-              puts "Bad URL entered."
-              badURL
        elsif $entry.text.empty?
               puts "Entry is empty."
               on_error
