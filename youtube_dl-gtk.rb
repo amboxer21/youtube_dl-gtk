@@ -83,11 +83,18 @@ def badURL
         md.destroy
 end
 
+def playlistSanityCheck
+       if File.exists?($entry.text)
+              fileOperation($entry.text,"r",nil)
+       end
+end
+
 def downloadSanityCheck
        puts "downloadSanityCheck #{$entry.text}"
-       if $entry.text !~ /^https:\/\/www.youtube.com\/watch?/
-       #if !$entry.text.scan(/^https/)
+       if $entry.text !~ /^https:\/\/www.youtube.com\/watch?/ && $entry.text.empty?
              badURL
+       elsif File.exists?($entry.text)
+              fileOperation($entry.text,"r",nil)
        end
 end
 
