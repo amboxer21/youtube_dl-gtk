@@ -120,6 +120,7 @@ def downLoadSanityCheck
               File.open($entry.text, "r").each_line do |plist|
                      if plist =~ /^http.*/
                             puts plist
+                            download($musicDir,"#{plist}",1)
                      else
                             puts "This is not a valid URL."
                      end
