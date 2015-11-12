@@ -55,18 +55,6 @@ table.attach(buttonLogo,0,5,0,4)
 buttonLogoImage = Gtk::Image.new("youtube-logo-transparent_solid.png")
 buttonLogo.image = buttonLogoImage
 
-def fileOperation(file,flag,string)
-        if flag == "a"
-               open(file,"a") do |line|
-                     line.puts string
-               end
-        elsif flag == "r"
-               open(file,"r").each_line do |line|
-                     puts line
-               end       
-        end
-end
-
 def on_error
         md = Gtk::MessageDialog.new(nil, Gtk::Dialog::MODAL | 
              Gtk::Dialog::DESTROY_WITH_PARENT, Gtk::MessageDialog::ERROR, 
@@ -83,27 +71,11 @@ def badURL
         md.destroy
 end
 
-def playlistSanityCheck
-       if File.exists?($entry.text)
-              fileOperation($entry.text,"r",nil)
-       end
-end
-
-def downloadSanityCheck
-       puts "downloadSanityCheck #{$entry.text}"
-       if $entry.text !~ /^https:\/\/www.youtube.com\/watch?/ && !$entry.text.empty?
-             badURL
-       elsif File.exists?($entry.text)
-              fileOperation($entry.text,"r",nil)
-       end
-end
-
 def delete_text
        if !File.exists?("#{$baseDir}/.youtube_dl-gtk")
                Dir::mkdir "#{$baseDir}/.youtube_dl-gtk"
        end
 
-       fileOperation("#{$baseDir}/.youtube_dl-gtk/history","a","#{$entry.text}") 
        $entry.delete_text(0,$entry.text.length)
 end
 
@@ -141,6 +113,34 @@ def childWindow
        $buttonDelete.show
 end
 
+def downLoadSanityCheck
+       if !validFile($entry.text) # Not a file then return true if entry starts with a valid URL
+              urlSanityCheck($entry.text)
+       else
+              File.open($entry.text, "r").each_line do |plist|
+                     if plist =~ /^http.*/
+                            puts plist
+                     else
+                            puts "This is not a valid URL."
+                     end
+              end
+       end
+end
+
+def validFile(file)
+       return true if File.exists?(file)
+end
+
+def urlSanityCheck(var)
+       if var =~ /^http.*/
+              puts var
+              return true
+       else
+              puts "This is not a valid URL."
+              return false
+       end
+end
+
 buttonHistory = Gtk::Button.new("History")
 table.attach(buttonHistory,5,6,4,5)
 buttonHistory.signal_connect("clicked") do
@@ -151,7 +151,7 @@ buttonDownload = Gtk::Button.new("Download")
 table.attach(buttonDownload,5,6,5,6)
 buttonDownload.signal_connect("clicked") do
 
-       downloadSanityCheck
+       downLoadSanityCheck
 
        if File.exists?($musicDir) && $entryDir.text.empty? && !$entry.text.empty?
               #`youtube-dl --extract-audio --audio-format mp3 -o "#{$musicDir}/%(title)s.%(ext)s" "#{$entry.text}/%(title)s.%(ext)s"`
@@ -181,7 +181,6 @@ end
 
 table.show
 buttonDownload.show
-buttonClose.show
 labelDir.show
 labelURL.show
 mainWindow.show
