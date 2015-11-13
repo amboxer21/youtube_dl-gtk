@@ -71,15 +71,17 @@ def badURL
         md.destroy
 end
 
-def delete_text
+def delete_text(entry)
        if !File.exists?("#{$baseDir}/.youtube_dl-gtk")
                Dir::mkdir "#{$baseDir}/.youtube_dl-gtk"
        end
 
-       $entry.delete_text(0,$entry.text.length)
+       entry.delete_text(0,entry.text.length)
 end
 
 def download(dir,entry,val)
+       puts "dir #{dir}"
+       puts "entry #{entry}"
        if val == 1
               `youtube-dl --prefer-avconv --extract-audio --audio-format mp3 -o "#{dir}/%(title)s.%(ext)s" "#{entry}/%(title)s.%(ext)s"`
        elsif val == 0
@@ -120,7 +122,7 @@ def downLoadSanityCheck
               File.open($entry.text, "r").each_line do |plist|
                      if plist =~ /^http.*/
                             puts plist
-                            download($musicDir,"#{plist}",1)
+                            $entryDir.text.empty? ? download($musicDir,"#{plist}",1) : download("#{$musicDir}/#{$entryDir.text}","#{plist}",0)
                      else
                             puts "This is not a valid URL."
                      end
@@ -130,6 +132,10 @@ end
 
 def validFile(file)
        return true if File.exists?(file)
+end
+
+def isDirEmpty
+       return true if $entryDir.text.empty?
 end
 
 def urlSanityCheck(var)
@@ -151,28 +157,29 @@ end
 buttonDownload = Gtk::Button.new("Download")
 table.attach(buttonDownload,5,6,5,6)
 buttonDownload.signal_connect("clicked") do
-
+ 
+       puts "Dir entry is not empty" if !$entryDir.text.empty?
        downLoadSanityCheck
 
        if File.exists?($musicDir) && $entryDir.text.empty? && !$entry.text.empty?
               #`youtube-dl --extract-audio --audio-format mp3 -o "#{$musicDir}/%(title)s.%(ext)s" "#{$entry.text}/%(title)s.%(ext)s"`
               download($musicDir,$entry.text,1)
-              delete_text
+              delete_text($entry)
        elsif !File.exists?($musicDir) && $entryDir.text.empty?
               Dir::mkdir "#{ENV['HOME']}/Music"
               #`youtube-dl --extract-audio --audio-format mp3 -o "#{$musicDir}/%(title)s.%(ext)s" "#{$entry.text}/%(title)s.%(ext)s"`
               download($musicDir,$entry.text,1)
-              delete_text
+              delete_text($entry)
        elsif !$entryDir.text.empty? && !$entry.text.empty?
               if File.exists?("#{$baseDir}/#{$entryDir.text}")
                      #`youtube-dl --extract-audio --audio-format mp3 -o "#{$baseDir}/#{$entryDir.text}/%(title)s.%(ext)s" "#{$entry.text}"`
                      download("#{$baseDir}/#{$entryDir}",$entry.text,0)
-                     delete_text
+                     delete_text($entry)
               else
                      FileUtils::mkdir_p "#{$baseDir}/#{$entryDir.text}"
                      #`youtube-dl --extract-audio --audio-format mp3 -o "#{$baseDir}/#{$entryDir.text}/%(title)s.%(ext)s" "#{$entry.text}"`
                      download("#{$baseDir}/#{$entryDir}",$entry.text,0)
-                     delete_text
+                     delete_text($entry)
               end
        elsif $entry.text.empty?
               puts "Entry is empty."
