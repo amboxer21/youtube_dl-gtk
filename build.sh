@@ -21,7 +21,6 @@ echo -e "\nDistro: ${distro}.\n"
 # Get the current shell
 shell=$(echo $SHELL | awk '{gsub(/\//, " "); print $2}')	
 export shell=$shell
-#echo -e "Shell: ${shell}."
 
 # Get the current logged in users name
 user=$(users | awk '{print $1}')
@@ -49,6 +48,7 @@ function buildYoutubeDL() {
   echo -e "\nconfiguring\n" && sleep 1 && make
   echo -e "\nInstalling youtube-dl\n" && sleep 1 && make install 2> /dev/null
   youtube-dl -U
+  echo -e "\nYoutube-dl was succesfully installed.\n"
 };
 
 function dpkg() {
@@ -56,7 +56,7 @@ function dpkg() {
   #apt-get --force-yes --yes install ruby1.9.3
   #apt-get --force-yes --yes install libglib2.0-0
   #apt-get --force-yes --yes install libmagickwand-dev
-  apt-get remove youtube-dl
+  apt-get remove youtube-dl && echo -e "\nRemoved system package: youtube-dl\n"
   buildYoutubeDL || echo -e "\n!!!!!!!!! Sorry but youtube-dl could not be built. You must build and install before you continue !!!!!!!!!!\n";
 };
 
