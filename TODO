@@ -4,4 +4,4 @@ List of things todo
 - Compile ffmpeg with libmp3lame for all base distros. --enable-libmp3lame
   ^^ Added a function to build an updated version of youtube-dl and autograde itself.
 - Add prompt to display the packages and things that are going to be done and ask the user if they want to continue.
-
+- Add current packages versus the ones they need. Proceed if everything is OK and prompt to install new software if not.
