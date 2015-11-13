@@ -43,7 +43,9 @@ if [[ $(cat `pwd`/build.sh | egrep -o "\#${alt}" | wc -l) > 1 ]]; then
 fi
 
 function buildYoutubeDL() {
-  echo -e "Attempting to build youtube-dl";
+  echo -e "\nUnpacking youtube-dl source.\n" && sleep 1
+  tar -xzvf youtube-dl.tar.gz
+  echo -e "Attempting to build youtube-dl" && sleep 1;
   cd `pwd`/youtube-dl/
   echo -e "\nconfiguring\n" && sleep 1 && make
   echo -e "\nInstalling youtube-dl\n" && sleep 1 && make install 2> /dev/null
