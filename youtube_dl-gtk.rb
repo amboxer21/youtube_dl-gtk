@@ -55,6 +55,10 @@ table.attach(buttonLogo,0,5,0,4)
 buttonLogoImage = Gtk::Image.new("youtube-logo-transparent_solid.png")
 buttonLogo.image = buttonLogoImage
 
+       if !File.exists?("#{$baseDir}/.youtube_dl-gtk")
+               Dir::mkdir "#{$baseDir}/.youtube_dl-gtk"
+       end
+
 def on_error
         md = Gtk::MessageDialog.new(nil, Gtk::Dialog::MODAL | 
              Gtk::Dialog::DESTROY_WITH_PARENT, Gtk::MessageDialog::ERROR, 
@@ -72,16 +76,12 @@ def badURL
 end
 
 def delete_text(entry)
-       if !File.exists?("#{$baseDir}/.youtube_dl-gtk")
-               Dir::mkdir "#{$baseDir}/.youtube_dl-gtk"
-       end
-
        entry.delete_text(0,entry.text.length)
 end
 
 def download(dir,entry,val)
-       puts "dir #{dir}"
-       puts "entry #{entry}"
+       #puts "dir #{dir}"
+       #puts "entry #{entry}"
        if val == 1
               `youtube-dl --prefer-avconv --extract-audio --audio-format mp3 -o "#{dir}/%(title)s.%(ext)s" "#{entry}/%(title)s.%(ext)s"`
        elsif val == 0
@@ -121,10 +121,11 @@ def downLoadSanityCheck
        else
               File.open($entry.text, "r").each_line do |plist|
                      if plist =~ /^http.*/
-                            puts plist
+                            #puts plist
                             $entryDir.text.empty? ? download($musicDir,"#{plist}",1) : download("#{$musicDir}/#{$entryDir.text}","#{plist}",0)
                      else
-                            puts "This is not a valid URL."
+                            #puts "This is not a valid URL."
+                            badURL
                      end
               end
        end
@@ -140,10 +141,11 @@ end
 
 def urlSanityCheck(var)
        if var =~ /^http.*/
-              puts var
+              #puts var
               return true
        else
-              puts "This is not a valid URL."
+              #puts "This is not a valid URL."
+              badURL
               return false
        end
 end
@@ -158,31 +160,34 @@ buttonDownload = Gtk::Button.new("Download")
 table.attach(buttonDownload,5,6,5,6)
 buttonDownload.signal_connect("clicked") do
  
-       puts "Dir entry is not empty" if !$entryDir.text.empty?
        downLoadSanityCheck
 
        if File.exists?($musicDir) && $entryDir.text.empty? && !$entry.text.empty?
               #`youtube-dl --extract-audio --audio-format mp3 -o "#{$musicDir}/%(title)s.%(ext)s" "#{$entry.text}/%(title)s.%(ext)s"`
               download($musicDir,$entry.text,1)
               delete_text($entry)
+              delete_text($entryDir) if !isDirEmpty 
        elsif !File.exists?($musicDir) && $entryDir.text.empty?
               Dir::mkdir "#{ENV['HOME']}/Music"
               #`youtube-dl --extract-audio --audio-format mp3 -o "#{$musicDir}/%(title)s.%(ext)s" "#{$entry.text}/%(title)s.%(ext)s"`
               download($musicDir,$entry.text,1)
               delete_text($entry)
+              delete_text($entryDir) if !isDirEmpty 
        elsif !$entryDir.text.empty? && !$entry.text.empty?
               if File.exists?("#{$baseDir}/#{$entryDir.text}")
                      #`youtube-dl --extract-audio --audio-format mp3 -o "#{$baseDir}/#{$entryDir.text}/%(title)s.%(ext)s" "#{$entry.text}"`
                      download("#{$baseDir}/#{$entryDir}",$entry.text,0)
                      delete_text($entry)
+                     delete_text($entryDir) if !isDirEmpty 
               else
                      FileUtils::mkdir_p "#{$baseDir}/#{$entryDir.text}"
                      #`youtube-dl --extract-audio --audio-format mp3 -o "#{$baseDir}/#{$entryDir.text}/%(title)s.%(ext)s" "#{$entry.text}"`
                      download("#{$baseDir}/#{$entryDir}",$entry.text,0)
                      delete_text($entry)
+                     delete_text($entryDir) if !isDirEmpty 
               end
        elsif $entry.text.empty?
-              puts "Entry is empty."
+              #puts "Entry is empty."
               on_error
        end
 end
