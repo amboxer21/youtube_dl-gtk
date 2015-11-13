@@ -48,6 +48,7 @@ function buildYoutubeDL() {
   cd `pwd`/youtube-dl/
   echo -e "\nconfiguring\n" && sleep 1 && make
   echo -e "\nInstalling youtube-dl\n" && sleep 1 && make install 2> /dev/null
+  youtube-dl -U
 };
 
 function dpkg() {
