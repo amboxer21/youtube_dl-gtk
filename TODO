@@ -3,3 +3,5 @@ List of things todo
 - Add url dowload history and incorporate into the UI
 - Compile ffmpeg with libmp3lame for all base distros. --enable-libmp3lame
   ^^ Added a function to build an updated version of youtube-dl and autograde itself.
+- Add prompt to display the packages and things that are going to be done and ask the user if they want to continue.
+
