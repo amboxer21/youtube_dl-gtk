@@ -56,6 +56,7 @@ function dpkg() {
   #apt-get --force-yes --yes install ruby1.9.3
   #apt-get --force-yes --yes install libglib2.0-0
   #apt-get --force-yes --yes install libmagickwand-dev
+  #apt-get --force-yes --yes install pandoc
   apt-get remove youtube-dl && echo -e "\nRemoved system package: youtube-dl\n"
   buildYoutubeDL || echo -e "\n!!!!!!!!! Sorry but youtube-dl could not be built. You must build and install before you continue !!!!!!!!!!\n";
 };
@@ -65,6 +66,7 @@ function yum() {
   #yum -y install ruby-devel
   #yum -y install glib2-devel
   #yum -y install ImageMagick-devel
+  #yum -y install pandoc
   yum -R youtube-dl
   buildYoutubeDL || echo -e "\n!!!!!!!!! Sorry but youtube-dl could not be built. You must build and install before you continue !!!!!!!!!!\n";
 }
