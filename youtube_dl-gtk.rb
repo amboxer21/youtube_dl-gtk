@@ -83,14 +83,8 @@ def delete_text(entry)
        entry.delete_text(0,entry.text.length)
 end
 
-def download(dir,entry,val)
-       #puts "dir #{dir}"
-       #puts "entry #{entry}"
-       if val == 1
+def download(dir,entry)
               `youtube-dl --prefer-avconv --extract-audio --audio-format mp3 -o "#{dir}/%(title)s.%(ext)s" "#{entry}/%(title)s.%(ext)s"`
-       elsif val == 0
-              `youtube-dl --prefer-avconv --extract-audio --audio-format mp3 -o "#{dir}/%(title)s.%(ext)s" "#{entry}"` if val == 0
-       end
 end
 
 # My attempt to get a second window going to place history info in a scrolled window widget.
@@ -124,16 +118,15 @@ def downLoadSanityCheck
               on_error
               destroyEntries
        elsif !validFile($entry.text) && urlSanityCheck($entry.text) # Not a file then return true if entry starts with a valid URL
-              isDirEmpty? ? download($musicDir,$entry.text,1) : download("#{$musicDir}/#{$entryDir.text}",$entry.text,0)
+              isDirEmpty? ? download($musicDir,$entry.text) : download("#{$musicDir}/#{$entryDir.text}",$entry.text)
               destroyEntries
        elsif validFile($entry.text) 
               File.open($entry.text, "r").each_line do |plist|
                      if plist =~ /^http.*/
                             puts "plist -> #{plist}"
-                            $entryDir.text.empty? ? download($musicDir,plist,1) : download("#{$musicDir}/#{$entryDir.text}",plist,0)
+                            $entryDir.text.empty? ? download($musicDir,plist) : download("#{$musicDir}/#{$entryDir.text}",plist)
                             destroyEntries
                      else
-                            #puts "This is not a valid URL."
                             badURL
                             destroyEntries
                      end
@@ -155,10 +148,8 @@ end
 
 def urlSanityCheck(var)
        if var =~ /^http.*/
-              #puts var
               return true
        else
-              #puts "This is not a valid URL."
               badURL
               return false
        end
@@ -178,38 +169,7 @@ end
 buttonDownload = Gtk::Button.new("Download")
 table.attach(buttonDownload,5,6,5,6)
 buttonDownload.signal_connect("clicked") do
- 
        downLoadSanityCheck
-
-# if entryDir is empty && entry is not
-# if both are empty
-# if entryDir is not empty 
-=begin
-       if $entryDir.text.empty? && !$entry.text.empty?
-              #`youtube-dl --extract-audio --audio-format mp3 -o "#{$musicDir}/%(title)s.%(ext)s" "#{$entry.text}/%(title)s.%(ext)s"`
-              download($musicDir,$entry.text,1)
-              destroyEntries
-       elsif !File.exists?($musicDir) && $entryDir.text.empty?
-              Dir::mkdir "#{ENV['HOME']}/Music"
-              #`youtube-dl --extract-audio --audio-format mp3 -o "#{$musicDir}/%(title)s.%(ext)s" "#{$entry.text}/%(title)s.%(ext)s"`
-              download($musicDir,$entry.text,1)
-              destroyEntries
-       elsif !$entryDir.text.empty? && !$entry.text.empty?
-              if File.exists?("#{$baseDir}/#{$entryDir.text}")
-                     #`youtube-dl --extract-audio --audio-format mp3 -o "#{$baseDir}/#{$entryDir.text}/%(title)s.%(ext)s" "#{$entry.text}"`
-                     download("#{$musicDir}/#{$entryDir.text}",$entry.text,0)
-                     destroyEntries
-              else
-                     FileUtils::mkdir_p "#{$baseDir}/#{$entryDir.text}"
-                     #`youtube-dl --extract-audio --audio-format mp3 -o "#{$baseDir}/#{$entryDir.text}/%(title)s.%(ext)s" "#{$entry.text}"`
-                     download("#{$baseDir}/#{$entryDir.text}",$entry.text,0)
-                     destroyEntries
-              end
-       elsif $entry.text.empty?
-              #puts "Entry is empty."
-              on_error
-       end
-=end
 end
 
 table.show
