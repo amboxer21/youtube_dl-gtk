@@ -28,8 +28,8 @@ user=$(users | awk '{print $1}')
 export user=$user;
 echo -e "\nUsername: ${user}.\n";
 
-for i in dpkg pacman emerge yum aptitude; do
-  if [[ `echo $i 2> /dev/null` ]]; then
+for i in pacman dpkg yum emerge aptitude; do
+  if [[ `$i --help 2> /dev/null` ]]; then
     if [[ $i == "dpkg" || $i == "aptitude" ]]; then
       alt="apt-get"
     fi
