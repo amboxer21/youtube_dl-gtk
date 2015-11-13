@@ -1,2 +1,0 @@
-install: cannot remove ‘/usr/local/bin/youtube-dl’: Permission denied
-make: *** [install] Error 1
