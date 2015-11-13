@@ -29,26 +29,37 @@ export user=$user;
 echo -e "\nUsername: ${user}.\n";
 
 for i in dpkg pacman emerge yum aptitude; do
-  if [[ `$i 2> /dev/null` ]]; then
+  if [[ `echo $i 2> /dev/null` ]]; then
     pkg_manager=$i;
     break;
   fi
 done
 
+function buildYoutubeDL() {
+  echo -e "Attempting to build youtube-dl";
+  cd `pwd`/youtube-dl/
+  echo -e "\nconfiguring\n" && sleep 1 && make
+  echo -e "\nInstalling youtube-dl\n" && sleep 1 && make install 2> /dev/null
+};
+
 function dpkg() {
   #apt-get --force-yes --yes install ruby-dev
   #apt-get --force-yes --yes install ruby1.9.3
-  #apt-get --force-yes --yes install youtube-dl
+  ##apt-get --force-yes --yes install youtube-dl ## Not needed due to the system package being broken. this will be installed via git
   #apt-get --force-yes --yes install libglib2.0-0
   #apt-get --force-yes --yes install libmagickwand-dev
+  apt-get remove youtube-dl
+  buildYoutubeDL || echo -e "\n!!!!!!!!! Sorry but youtube-dl could not be built. You must build and install before you continue !!!!!!!!!!\n";
 };
 
 function yum() {
-    #yum -y install ruby1.9.3
-    #yum -y install ruby-devel
-    #yum -y install glib2-devel
-    #yum -y install youtube-dl
-    #yum -y install ImageMagick-devel
+  #yum -y install ruby1.9.3
+  #yum -y install ruby-devel
+  #yum -y install glib2-devel
+  #yum -y install youtube-dl
+  #yum -y install ImageMagick-devel
+  yum -R youtube-dl
+  buildYoutubeDL || echo -e "\n!!!!!!!!! Sorry but youtube-dl could not be built. You must build and install before you continue !!!!!!!!!!\n";
 }
 
 case $shell in
