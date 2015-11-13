@@ -1,18 +1,18 @@
 #!/bin/bash
   
-  # Make sure user running script is root.
-  if [[ $EUID -ne 0 ]]; then
-    echo -e "\nThis script must be run as root.\n";
-    exit;
-  fi
+# Make sure user running script is root.
+if [[ $EUID -ne 0 ]]; then
+  echo -e "\nThis script must be run as root.\n";
+  exit;
+fi
 
-  if [[ `uname -m | egrep -io "(i[36]86)" | uniq` ]]; then 
-    arch="32";
-    echo -e "\nSystem: ${arch}bit.\n";
-  else
-    arch="64";
-    echo -e "\nSystem: ${arch}bit.\n";
-  fi
+if [[ `uname -m | egrep -io "(i[36]86)" | uniq` ]]; then 
+  arch="32";
+  echo -e "\nSystem: ${arch}bit.\n";
+else
+  arch="64";
+  echo -e "\nSystem: ${arch}bit.\n";
+fi
 
 distro=$(lsb_release -irs)
 export distro=$distro
@@ -30,10 +30,18 @@ echo -e "\nUsername: ${user}.\n";
 
 for i in dpkg pacman emerge yum aptitude; do
   if [[ `echo $i 2> /dev/null` ]]; then
+    if [[ $i == "dpkg" || $i == "aptitude" ]]; then
+      alt="apt-get"
+    fi
     pkg_manager=$i;
     break;
   fi
 done
+
+if [[ $(cat `pwd`/build.sh | egrep -o "\#${alt}" | wc -l) > 1 ]]; then
+  echo -e "\n\n!!!!!!!!! Please uncomment the install lines inside of $pkg_manager function before you continue !!!!!!!!!!\n\n";
+  exit;
+fi
 
 function buildYoutubeDL() {
   echo -e "Attempting to build youtube-dl";
@@ -45,7 +53,6 @@ function buildYoutubeDL() {
 function dpkg() {
   #apt-get --force-yes --yes install ruby-dev
   #apt-get --force-yes --yes install ruby1.9.3
-  ##apt-get --force-yes --yes install youtube-dl ## Not needed due to the system package being broken. this will be installed via git
   #apt-get --force-yes --yes install libglib2.0-0
   #apt-get --force-yes --yes install libmagickwand-dev
   apt-get remove youtube-dl
@@ -56,7 +63,6 @@ function yum() {
   #yum -y install ruby1.9.3
   #yum -y install ruby-devel
   #yum -y install glib2-devel
-  #yum -y install youtube-dl
   #yum -y install ImageMagick-devel
   yum -R youtube-dl
   buildYoutubeDL || echo -e "\n!!!!!!!!! Sorry but youtube-dl could not be built. You must build and install before you continue !!!!!!!!!!\n";
