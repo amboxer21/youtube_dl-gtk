@@ -89,7 +89,7 @@ def download(dir,entry,val)
        if val == 1
               `youtube-dl --prefer-avconv --extract-audio --audio-format mp3 -o "#{dir}/%(title)s.%(ext)s" "#{entry}/%(title)s.%(ext)s"`
        elsif val == 0
-              `youtube-dl --prefer-avconv --extract-audio --audio-format mp3 -o "#{dir}/#{dir}/%(title)s.%(ext)s" "#{entry}"` if val == 0
+              `youtube-dl --prefer-avconv --extract-audio --audio-format mp3 -o "#{dir}/%(title)s.%(ext)s" "#{entry}"` if val == 0
        end
 end
 
@@ -120,11 +120,11 @@ def childWindow
 end
 
 def downLoadSanityCheck
-       if $entry.text.empty?
+       if isEntryEmpty?
               on_error
               destroyEntries
-       elsif $entryDir.text.empty? && !validFile($entry.text) # Not a file then return true if entry starts with a valid URL
-              download($musicDir,$entry.text,1) if urlSanityCheck($entry.text)
+       elsif !validFile($entry.text) && urlSanityCheck($entry.text) # Not a file then return true if entry starts with a valid URL
+              isDirEmpty? ? download($musicDir,$entry.text,1) : download("#{$musicDir}/#{$entryDir.text}",$entry.text,0)
               destroyEntries
        elsif validFile($entry.text) 
               File.open($entry.text, "r").each_line do |plist|
@@ -145,8 +145,12 @@ def validFile(file)
        return File.exists?(file)
 end
 
-def isDirEmpty
+def isDirEmpty?
        return $entryDir.text.empty?
+end
+
+def isEntryEmpty?
+       return $entry.text.empty?
 end
 
 def urlSanityCheck(var)
@@ -162,7 +166,7 @@ end
 
 def destroyEntries
        delete_text($entry)
-       delete_text($entryDir) if !isDirEmpty
+       delete_text($entryDir) if !isDirEmpty?
 end
 
 buttonHistory = Gtk::Button.new("History")
