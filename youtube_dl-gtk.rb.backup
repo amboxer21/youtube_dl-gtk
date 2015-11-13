@@ -84,12 +84,12 @@ def delete_text(entry)
 end
 
 def download(dir,entry,val)
-       #puts "dir #{dir}"
+       puts "dir #{dir}"
        #puts "entry #{entry}"
        if val == 1
               `youtube-dl --prefer-avconv --extract-audio --audio-format mp3 -o "#{dir}/%(title)s.%(ext)s" "#{entry}/%(title)s.%(ext)s"`
        elsif val == 0
-              `youtube-dl --prefer-avconv --extract-audio --audio-format mp3 -o "#{dir}/#{dir}/%(title)s.%(ext)s" "#{entry}"` if val == 0
+              `youtube-dl --prefer-avconv --extract-audio --audio-format mp3 -o "#{dir}/#{dir}/%(title)s.%(ext)s" "#{entry}"`
        end
 end
 
@@ -120,33 +120,27 @@ def childWindow
 end
 
 def downLoadSanityCheck
-       if $entry.text.empty?
-              on_error
-              destroyEntries
-       elsif $entryDir.text.empty? && !validFile($entry.text) # Not a file then return true if entry starts with a valid URL
-              download($musicDir,$entry.text,1) if urlSanityCheck($entry.text)
-              destroyEntries
-       elsif validFile($entry.text) 
+       if !validFile($entry.text) # Not a file then return true if entry starts with a valid URL
+              urlSanityCheck($entry.text)
+       else
               File.open($entry.text, "r").each_line do |plist|
                      if plist =~ /^http.*/
-                            puts "plist -> #{plist}"
-                            $entryDir.text.empty? ? download($musicDir,plist,1) : download("#{$musicDir}/#{$entryDir.text}",plist,0)
-                            destroyEntries
+                            #puts plist
+                            $entryDir.text.empty? ? download($musicDir,"#{plist}",1) : download("#{$musicDir}/#{$entryDir.text}","#{plist}",0)
                      else
                             #puts "This is not a valid URL."
                             badURL
-                            destroyEntries
                      end
               end
        end
 end
 
 def validFile(file)
-       return File.exists?(file)
+       return true if File.exists?(file)
 end
 
 def isDirEmpty
-       return $entryDir.text.empty?
+       return true if $entryDir.text.empty?
 end
 
 def urlSanityCheck(var)
@@ -158,11 +152,6 @@ def urlSanityCheck(var)
               badURL
               return false
        end
-end
-
-def destroyEntries
-       delete_text($entry)
-       delete_text($entryDir) if !isDirEmpty
 end
 
 buttonHistory = Gtk::Button.new("History")
@@ -180,32 +169,35 @@ buttonDownload.signal_connect("clicked") do
 # if entryDir is empty && entry is not
 # if both are empty
 # if entryDir is not empty 
-=begin
+
        if $entryDir.text.empty? && !$entry.text.empty?
               #`youtube-dl --extract-audio --audio-format mp3 -o "#{$musicDir}/%(title)s.%(ext)s" "#{$entry.text}/%(title)s.%(ext)s"`
               download($musicDir,$entry.text,1)
-              destroyEntries
+              delete_text($entry)
+              delete_text($entryDir) if !isDirEmpty 
        elsif !File.exists?($musicDir) && $entryDir.text.empty?
               Dir::mkdir "#{ENV['HOME']}/Music"
               #`youtube-dl --extract-audio --audio-format mp3 -o "#{$musicDir}/%(title)s.%(ext)s" "#{$entry.text}/%(title)s.%(ext)s"`
               download($musicDir,$entry.text,1)
-              destroyEntries
+              delete_text($entry)
+              delete_text($entryDir) if !isDirEmpty 
        elsif !$entryDir.text.empty? && !$entry.text.empty?
               if File.exists?("#{$baseDir}/#{$entryDir.text}")
                      #`youtube-dl --extract-audio --audio-format mp3 -o "#{$baseDir}/#{$entryDir.text}/%(title)s.%(ext)s" "#{$entry.text}"`
                      download("#{$musicDir}/#{$entryDir.text}",$entry.text,0)
-                     destroyEntries
+                     delete_text($entry)
+                     delete_text($entryDir) if !isDirEmpty 
               else
                      FileUtils::mkdir_p "#{$baseDir}/#{$entryDir.text}"
                      #`youtube-dl --extract-audio --audio-format mp3 -o "#{$baseDir}/#{$entryDir.text}/%(title)s.%(ext)s" "#{$entry.text}"`
                      download("#{$baseDir}/#{$entryDir.text}",$entry.text,0)
-                     destroyEntries
+                     delete_text($entry)
+                     delete_text($entryDir) if !isDirEmpty 
               end
        elsif $entry.text.empty?
               #puts "Entry is empty."
               on_error
        end
-=end
 end
 
 table.show
