@@ -80,7 +80,7 @@ def delete_text(entry)
 end
 
 def download(dir,entry,val)
-       #puts "dir #{dir}"
+       puts "dir #{dir}"
        #puts "entry #{entry}"
        if val == 1
               `youtube-dl --prefer-avconv --extract-audio --audio-format mp3 -o "#{dir}/%(title)s.%(ext)s" "#{entry}/%(title)s.%(ext)s"`
@@ -176,13 +176,13 @@ buttonDownload.signal_connect("clicked") do
        elsif !$entryDir.text.empty? && !$entry.text.empty?
               if File.exists?("#{$baseDir}/#{$entryDir.text}")
                      #`youtube-dl --extract-audio --audio-format mp3 -o "#{$baseDir}/#{$entryDir.text}/%(title)s.%(ext)s" "#{$entry.text}"`
-                     download("#{$baseDir}/#{$entryDir}",$entry.text,0)
+                     download("#{$baseDir}/#{$entryDir.text}",$entry.text,0)
                      delete_text($entry)
                      delete_text($entryDir) if !isDirEmpty 
               else
                      FileUtils::mkdir_p "#{$baseDir}/#{$entryDir.text}"
                      #`youtube-dl --extract-audio --audio-format mp3 -o "#{$baseDir}/#{$entryDir.text}/%(title)s.%(ext)s" "#{$entry.text}"`
-                     download("#{$baseDir}/#{$entryDir}",$entry.text,0)
+                     download("#{$baseDir}/#{$entryDir.text}",$entry.text,0)
                      delete_text($entry)
                      delete_text($entryDir) if !isDirEmpty 
               end
