@@ -122,3 +122,6 @@ case $pkg_manager in
 esac
 
 bundle install
+
+mv youtube_dl-gtk.rb youtube_dl-gtk
+chmod a+rx youtube_dl-gtk
