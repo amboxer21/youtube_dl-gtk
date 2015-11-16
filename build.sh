@@ -37,10 +37,10 @@ for i in pacman dpkg yum emerge aptitude; do
   fi
 done
 
-if [[ $(cat `pwd`/build.sh | egrep -o "\#${alt}" | wc -l) > 1 ]]; then
-  echo -e "\n\n!!!!!!!!! Please uncomment the install lines inside of $pkg_manager function before you continue !!!!!!!!!!\n\n";
-  exit;
-fi
+#if [[ $(cat `pwd`/build.sh | egrep -o "\#${alt}" | wc -l) > 1 ]]; then
+#  echo -e "\n\n!!!!!!!!! Please uncomment the install lines inside of $pkg_manager function before you continue !!!!!!!!!!\n\n";
+#  exit;
+#fi
 
 function buildYoutubeDL() {
   echo -e "\nUnpacking youtube-dl source.\n" && sleep 1

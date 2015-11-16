@@ -2,6 +2,7 @@
 
 require 'gtk2'
 require 'fileutils'
+require 'youtube-dl.rb'
 
 # Envirenment variables
 $baseDir  = ENV['HOME']
@@ -83,10 +84,6 @@ def delete_text(entry)
        entry.delete_text(0,entry.text.length)
 end
 
-def download(dir,entry)
-              `youtube-dl --prefer-avconv --extract-audio --audio-format mp3 -o "#{dir}/%(title)s.%(ext)s" "#{entry}/%(title)s.%(ext)s"`
-end
-
 # My attempt to get a second window going to place history info in a scrolled window widget.
 def childWindow
        $window = Gtk::Window.new
@@ -118,19 +115,18 @@ def downLoadSanityCheck
               on_error
               destroyEntries
        elsif !validFile($entry.text) && urlSanityCheck($entry.text) # Not a file then return true if entry starts with a valid URL
-              isDirEmpty? ? download($musicDir,$entry.text) : download("#{$musicDir}/#{$entryDir.text}",$entry.text)
+              isDirEmpty? ? download($musicDir,$entry.text) : download($entryDir.text,$entry.text)
               destroyEntries
        elsif validFile($entry.text) 
               File.open($entry.text, "r").each_line do |plist|
-                     if plist =~ /^http.*/
-                            puts "plist -> #{plist}"
-                            $entryDir.text.empty? ? download($musicDir,plist) : download("#{$musicDir}/#{$entryDir.text}",plist)
-                            destroyEntries
+                     if urlSanityCheck(plist)
+                            $entryDir.text.empty? ? download($musicDir,plist) : download($entryDir.text,plist)
                      else
                             badURL
                             destroyEntries
                      end
               end
+              destroyEntries
        end
 end
 
@@ -158,6 +154,10 @@ end
 def destroyEntries
        delete_text($entry)
        delete_text($entryDir) if !isDirEmpty?
+end
+
+def download(dir,entry)
+       `youtube-dl --prefer-avconv --extract-audio --audio-format mp3 -o '#{dir}/%(title)s.%(ext)s' '#{entry}'`
 end
 
 buttonHistory = Gtk::Button.new("History")
