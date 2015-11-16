@@ -56,11 +56,12 @@ function buildYoutubeDL() {
 function dpkg() {
 echo -e "The follwing software will be installed: \n" 
 
-echo -n "Would you like to contine: "
+echo -n "Would you like to contine[Y/n]: "
 read answer
 
 case $answer in 
   "yes"|"y"|"Y"|"YES")
+    echo -e "\nInstalling the necessary software/packages.\n";
     #apt-get --force-yes --yes install ruby-dev
     #apt-get --force-yes --yes install ruby1.9.3
     #apt-get --force-yes --yes install libglib2.0-0
@@ -68,7 +69,6 @@ case $answer in
     #apt-get --force-yes --yes install pandoc
     #apt-get remove youtube-dl && echo -e "\nRemoved system package: youtube-dl\n"
     #buildYoutubeDL || echo -e "\n!!!!!!!!! Sorry but youtube-dl could not be built. You must build and install before you continue !!!!!!!!!!\n";
-    echo -e "\n\nYES\n\n";
     ;;
   *)
     echo -e "\n\nQuiting now.\n\n";
@@ -79,14 +79,29 @@ esac
 };
 
 function yum() {
-  #yum -y install ruby1.9.3
-  #yum -y install ruby-devel
-  #yum -y install glib2-devel
-  #yum -y install ImageMagick-devel
-  #yum -y install pandoc
-  yum -R youtube-dl
-  buildYoutubeDL || echo -e "\n!!!!!!!!! Sorry but youtube-dl could not be built. You must build and install before you continue !!!!!!!!!!\n";
-}
+echo -e "The follwing software will be installed: \n" 
+
+echo -n "Would you like to contine[Y/n]: "
+read answer
+
+case $answer in
+  "yes"|"y"|"Y"|"YES")
+    echo -e "\nInstalling the necessary software/packages.\n";
+    #yum -y install ruby1.9.3
+    #yum -y install ruby-devel
+    #yum -y install glib2-devel
+    #yum -y install ImageMagick-devel
+    #yum -y install pandoc
+    #yum -R youtube-dl
+    #buildYoutubeDL || echo -e "\n!!!!!!!!! Sorry but youtube-dl could not be built. You must build and install before you continue !!!!!!!!!!\n";
+    ;;
+  *)
+    echo -e "\n\nQuiting now.\n\n";
+    exit;
+    ;;
+esac
+
+};
 
 case $shell in
   "bash")
@@ -120,9 +135,11 @@ case $pkg_manager in
   ;;
   pacman)
     echo -e "\nPackage Manager: pacman.\n";
+    pacman;
   ;;
   emerge)
     echo -e "\nPackage Manager: emerge.\n";
+    emerge;
   ;;
   yum)
     echo -e "\nPackage Manager: yum.\n";
@@ -130,6 +147,7 @@ case $pkg_manager in
   ;;
   aptitude)
     echo -e "\nPackage Manager: aptitude.\n";
+    aptitude;
   ;;
 esac
 
@@ -137,3 +155,4 @@ bundle install
 
 mv youtube_dl-gtk.rb youtube_dl-gtk
 chmod a+rx youtube_dl-gtk
+cp youtube_dl-gtk /usr/local/bin/
