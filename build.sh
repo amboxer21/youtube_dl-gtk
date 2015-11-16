@@ -54,13 +54,28 @@ function buildYoutubeDL() {
 };
 
 function dpkg() {
-  #apt-get --force-yes --yes install ruby-dev
-  #apt-get --force-yes --yes install ruby1.9.3
-  #apt-get --force-yes --yes install libglib2.0-0
-  #apt-get --force-yes --yes install libmagickwand-dev
-  #apt-get --force-yes --yes install pandoc
-  apt-get remove youtube-dl && echo -e "\nRemoved system package: youtube-dl\n"
-  buildYoutubeDL || echo -e "\n!!!!!!!!! Sorry but youtube-dl could not be built. You must build and install before you continue !!!!!!!!!!\n";
+echo -e "The follwing software will be installed: \n" 
+
+echo -n "Would you like to contine: "
+read answer
+
+case $answer in 
+  "yes"|"y"|"Y"|"YES")
+    #apt-get --force-yes --yes install ruby-dev
+    #apt-get --force-yes --yes install ruby1.9.3
+    #apt-get --force-yes --yes install libglib2.0-0
+    #apt-get --force-yes --yes install libmagickwand-dev
+    #apt-get --force-yes --yes install pandoc
+    #apt-get remove youtube-dl && echo -e "\nRemoved system package: youtube-dl\n"
+    #buildYoutubeDL || echo -e "\n!!!!!!!!! Sorry but youtube-dl could not be built. You must build and install before you continue !!!!!!!!!!\n";
+    echo -e "\n\nYES\n\n";
+    ;;
+  *)
+    echo -e "\n\nQuiting now.\n\n";
+    exit;
+    ;;
+esac
+
 };
 
 function yum() {
@@ -101,25 +116,20 @@ case $pkg_manager in
 
   dpkg)
     echo -e "\nPackage Manager: dpkg.\n";
-    echo -e "\nInstalling necessary packages.\n"
     dpkg;
   ;;
   pacman)
     echo -e "\nPackage Manager: pacman.\n";
-    echo -e "\nInstalling necessary packages.\n"
   ;;
   emerge)
     echo -e "\nPackage Manager: emerge.\n";
-    echo -e "\nInstalling necessary packages.\n"
   ;;
   yum)
     echo -e "\nPackage Manager: yum.\n";
-    echo -e "\nInstalling necessary packages.\n"
     yum;
   ;;
   aptitude)
     echo -e "\nPackage Manager: aptitude.\n";
-    echo -e "\nInstalling necessary packages.\n"
   ;;
 esac
 
