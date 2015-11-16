@@ -45,7 +45,7 @@ errorURL.signal_connect("clicked") {
 }
 
 tooltipURL = Gtk::Tooltips.new
-tooltipURL.set_tip($entry, "Enter youtube URL or properly formatted playlist here.", nil)
+tooltipURL.set_tip($entry, "Enter youtube URL here or a file path that that includes a properly formatted playlist.", nil)
 
 tooltipDir = Gtk::Tooltips.new
 tooltipDir.set_tip($entryDir, "Enter the directory you wish to save the song to. \nIf it doesnt exist, it will be created", nil)
