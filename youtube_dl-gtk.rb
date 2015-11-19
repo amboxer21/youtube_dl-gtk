@@ -2,7 +2,6 @@
 
 require 'gtk2'
 require 'fileutils'
-require 'youtube-dl.rb'
 
 # Envirenment variables
 $baseDir  = ENV['HOME']
@@ -76,6 +75,14 @@ def badURL
         md = Gtk::MessageDialog.new(nil, Gtk::Dialog::MODAL |
              Gtk::Dialog::DESTROY_WITH_PARENT, Gtk::MessageDialog::ERROR,
              Gtk::MessageDialog::BUTTONS_CLOSE, "Improperly formatted URL.")
+        md.run
+        md.destroy
+end
+
+def badDir
+        md = Gtk::MessageDialog.new(nil, Gtk::Dialog::MODAL |
+             Gtk::Dialog::DESTROY_WITH_PARENT, Gtk::MessageDialog::ERROR,
+             Gtk::MessageDialog::BUTTONS_CLOSE, "\"/\" cannot preceed dir.")
         md.run
         md.destroy
 end
@@ -157,7 +164,17 @@ def destroyEntries
 end
 
 def download(dir,entry)
-       `youtube-dl --prefer-avconv --extract-audio --audio-format mp3 -o '#{dir}/%(title)s.%(ext)s' '#{entry}'`
+
+        char = "/"
+        charSize = dir.scan(/#{char}/).size
+
+        if charSize >= 2
+                `youtube-dl --prefer-avconv --extract-audio --audio-format mp3 -o '#{dir}/%(title)s.%(ext)s' '#{entry}'`
+        else
+                badDir if dir =~ /^#{char}/
+        end
+
+        `youtube-dl --prefer-avconv --extract-audio --audio-format mp3 -o '#{$musicDir}#{dir}/%(title)s.%(ext)s' '#{entry}'` if charSize == 0
 end
 
 buttonHistory = Gtk::Button.new("History")
