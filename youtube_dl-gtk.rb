@@ -80,11 +80,13 @@ def badURL
 end
 
 def badDir
-        md = Gtk::MessageDialog.new(nil, Gtk::Dialog::MODAL |
-             Gtk::Dialog::DESTROY_WITH_PARENT, Gtk::MessageDialog::ERROR,
-             Gtk::MessageDialog::BUTTONS_CLOSE, "\"/\" cannot preceed dir.")
-        md.run
-        md.destroy
+        unless $flag == 1
+                md = Gtk::MessageDialog.new(nil, Gtk::Dialog::MODAL |
+                    Gtk::Dialog::DESTROY_WITH_PARENT, Gtk::MessageDialog::ERROR,
+                    Gtk::MessageDialog::BUTTONS_CLOSE, "\"/\" cannot preceed dir.")
+                md.run
+                md.destroy
+        end
 end
 
 def delete_text(entry)
@@ -171,7 +173,7 @@ def download(dir,entry)
         if charSize >= 2
                 `youtube-dl --prefer-avconv --extract-audio --audio-format mp3 -o '#{dir}/%(title)s.%(ext)s' '#{entry}'`
         else
-                badDir if dir =~ /^#{char}/
+                badDir; $flag = 1 if dir =~ /^#{char}/
         end
 
         `youtube-dl --prefer-avconv --extract-audio --audio-format mp3 -o '#{$musicDir}#{dir}/%(title)s.%(ext)s' '#{entry}'` if charSize == 0
