@@ -1,2 +1,2 @@
 # youtube_dl-gtk
-This a G  UI for the youtube-dl command line utility. this program is written in Ruby and the UI is written with the GTK2 UI toolkit.
+Just a fun Ruby GUI project. I just really enjoy working with UI toolkits!! Not worth forking or anything but to sum it up, its a UI for the youtube-dl command line utility. The UI is written with the Ruby GTK2 UI toolkit.
